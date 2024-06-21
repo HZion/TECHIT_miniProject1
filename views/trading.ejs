@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>부동산 게시물 지도 및 목록 표시</title>
+    <style>
+        body, html {width: 100%; height: 100%; margin: 0; padding: 0; font-family:'Malgun Gothic',dotum,'돋움',sans-serif;}
+        .map_wrap {position: relative; width: 100%; height: 100%;}
+        #map {width: 100%; height: 100%; position: relative; overflow: hidden;}
+        #menu_wrap {position: absolute; top: 10px; left: 10px; bottom: 30px; width: 250px; padding: 5px; overflow-y: auto; background: rgba(255, 255, 255, 0.7); z-index: 1; font-size: 12px; border-radius: 10px;}
+        .bg_white {background: #fff;}
+        #menu_wrap hr {display: block; height: 1px; border: 0; border-top: 2px solid #5F5F5F; margin: 3px 0;}
+        #menu_wrap .option {text-align: center;}
+        #menu_wrap .option p {margin: 10px 0;}  
+        #menu_wrap .option button {margin-left: 5px;}
+        #placesList li {list-style: none;}
+        #placesList .item {position: relative; border-bottom: 1px solid #888; overflow: hidden; cursor: pointer; min-height: 65px;}
+        #placesList .item span {display: block; margin-top: 4px;}
+        #placesList .item h5, #placesList .item .info {text-overflow: ellipsis; overflow: hidden; white-space: nowrap;}
+        #placesList .item .info {padding: 10px 0 10px 55px;}
+        #placesList .info .gray {color: #8a8a8a;}
+        #placesList .info .jibun {padding-left: 26px; background: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_jibun.png) no-repeat;}
+        #placesList .info .tel {color: #009900;}
+        #placesList .item .markerbg {float: left; position: absolute; width: 36px; height: 37px; margin: 10px 0 0 10px; background: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png) no-repeat;}
+        #placesList .item .marker_1 {background-position: 0 -10px;}
+        #placesList .item .marker_2 {background-position: 0 -56px;}
+        #placesList .item .marker_3 {background-position: 0 -102px;}
+        #placesList .item .marker_4 {background-position: 0 -148px;}
+        #placesList .item .marker_5 {background-position: 0 -194px;}
+        #placesList .item .marker_6 {background-position: 0 -240px;}
+        #placesList .item .marker_7 {background-position: 0 -286px;}
+        #placesList .item .marker_8 {background-position: 0 -332px;}
+        #placesList .item .marker_9 {background-position: 0 -378px;}
+        #placesList .item .marker_10 {background-position: 0 -423px;}
+        #placesList .item .marker_11 {background-position: 0 -470px;}
+        #placesList .item .marker_12 {background-position: 0 -516px;}
+        #placesList .item .marker_13 {background-position: 0 -562px;}
+        #placesList .item .marker_14 {background-position: 0 -608px;}
+        #placesList .item .marker_15 {background-position: 0 -654px;}
+        #pagination {margin: 10px auto; text-align: center;}
+        #pagination a {display: inline-block; margin-right: 10px;}
+        #pagination .on {font-weight: bold; cursor: default; color: #777;}
+    </style>
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <header class="header_section">
+        <div class="container-fluid">
+          <nav class="navbar navbar-expand-lg custom_nav-container ">
+            <a class="navbar-brand" href="index.html">
+              <span>
+                Cryptop
+              </span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+  
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <div class="d-flex ml-auto flex-column flex-lg-row align-items-center">
+                <ul class="navbar-nav  ">
+                  <li class="nav-item active">
+                    <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                  </li>
+                  <li class="nav-item ">
+                    <a class="nav-link" href="about.html">  about </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/send"> send </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/trading">
+                      <span>Trading</span> <img src="images/wallet.png" alt="" />
+                    </a>
+                  </li>
+                 
+                  <li class="nav-item">
+                    <a class="nav-link" href="/logout"> Logout</a>
+                  </li>
+             
+                    <li class="nav-item">
+                      <a class="nav-link" href="/login"> Login</a>
+                    </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/signup"> Sign Up</a>
+                  </li>
+                  
+                </ul>
+                <div class="user_option">
+                  <form class="form-inline my-2 my-lg-0 ml-0 ml-lg-4 mb-3 mb-lg-0">
+                    <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit"></button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </nav>
+        </div>
+      </header>
+<div class="map_wrap">
+    
+    <div id="map"></div>
+
+    <div id="menu_wrap" class="bg_white">
+        <div class="option">
+            <div>
+                <button onclick="displayProperties()">부동산 목록 보기</button>
+            </div>
+        </div>
+        <hr>
+        <ul id="placesList"></ul>
+        <div id="pagination"></div>
+    </div>
+</div>
+
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=3097ec715d6e2fb312433de5f484d018&libraries=services"></script>
+<script>
+var markers = [];
+
+var mapContainer = document.getElementById('map'),
+    mapOption = {
+        center: new kakao.maps.LatLng(37.566826, 126.9786567),
+        level: 3
+    };
+
+var map = new kakao.maps.Map(mapContainer, mapOption); 
+var infowindow = new kakao.maps.InfoWindow({zIndex:1});
+
+var properties = [
+    {
+        title: "부동산 1",
+        lat: 37.566826,
+        lng: 126.9786567,
+        address: "서울특별시 중구 세종대로 110",
+        phone: "02-123-4567"
+    },
+    {
+        title: "부동산 2",
+        lat: 37.565826,
+        lng: 126.9776567,
+        address: "서울특별시 중구 을지로 110",
+        phone: "02-234-5678"
+    },
+    // 추가 부동산 데이터를 여기에 추가
+];
+
+function displayProperties() {
+    var listEl = document.getElementById('placesList'), 
+    menuEl = document.getElementById('menu_wrap'),
+    fragment = document.createDocumentFragment(), 
+    bounds = new kakao.maps.LatLngBounds(), 
+    listStr = '';
+    
+    removeAllChildNods(listEl);
+    removeMarker();
+    
+    for ( var i=0; i<properties.length; i++ ) {
+        var propertyPosition = new kakao.maps.LatLng(properties[i].lat, properties[i].lng),
+            marker = addMarker(propertyPosition, i, properties[i].title), 
+            itemEl = getListItem(i, properties[i]); 
+
+        bounds.extend(propertyPosition);
+
+        (function(marker, property) {
+            var infowindow = new kakao.maps.InfoWindow({
+                content: '<div style="padding:5px;z-index:1;">' + property.title + '<br>' + property.address + '<br>' + property.phone + '</div>'
+            });
+
+            kakao.maps.event.addListener(marker, 'mouseover', function() {
+                infowindow.open(map, marker);
+            });
+
+            kakao.maps.event.addListener(marker, 'mouseout', function() {
+                infowindow.close();
+            });
+
+            itemEl.onmouseover =  function () {
+                displayInfowindow(marker, property.title);
+            };
+
+            itemEl.onmouseout =  function () {
+                infowindow.close();
+            };
+        })(marker, properties[i]);
+
+        fragment.appendChild(itemEl);
+    }
+
+    listEl.appendChild(fragment);
+    menuEl.scrollTop = 0;
+
+    map.setBounds(bounds);
+}
+
+function getListItem(index, property) {
+    var el = document.createElement('li'),
+    itemStr = '<span class="markerbg marker_' + (index+1) + '"></span>' +
+                '<div class="info">' +
+                '   <h5>' + property.title + '</h5>' +
+                '   <span>' + property.address + '</span>' +
+                '  <span class="tel">' + property.phone  + '</span>' +
+                '</div>';           
+
+    el.innerHTML = itemStr;
+    el.className = 'item';
+
+    return el;
+}
+
+function addMarker(position, idx, title) {
+    var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png',
+        imageSize = new kakao.maps.Size(36, 37),
+        imgOptions =  {
+            spriteSize : new kakao.maps.Size(36, 691),
+            spriteOrigin : new kakao.maps.Point(0, (idx*46)+10),
+            offset: new kakao.maps.Point(13, 37)
+        },
+        markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
+        marker = new kakao.maps.Marker({
+            position: position,
+            image: markerImage,
+            clickable: true
+        });
+
+    marker.setMap(map);
+    markers.push(marker);
+
+    return marker;
+}
+
+function removeMarker() {
+    for ( var i = 0; i < markers.length; i++ ) {
+        markers[i].setMap(null);
+    }   
+    markers = [];
+}
+
+function displayInfowindow(marker, title) {
+    var content = '<div style="padding:5px;z-index:1;">' + title + '</div>';
+    infowindow.setContent(content);
+    infowindow.open(map, marker);
+}
+
+function removeAllChildNods(el) {   
+    while (el.hasChildNodes()) {
+        el.removeChild (el.lastChild);
+    }
+}
+</script>
+</body>
+</html>
