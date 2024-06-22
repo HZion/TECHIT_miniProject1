@@ -130,13 +130,15 @@ function isAuthenticated(req, res, next) {
 
 
 app.get("/trading", (req, res)=>{
-    if(req.session.user){
-        console.log("treading session 정보")
-        console.log(req.session.user.inputID);
-    }
-    res.render("trading.ejs");
+    mydb.collection("property").find().toArray().then(result =>{
+        if(req.session.user){
+            console.log("treading session 정보")
+            console.log(req.session.user.inputID);
+        };
+        console.log(result);
+        res.render("trading.ejs", {propData : result});
+    }); // 몽고 db에 등록한 부동산 매물 리스트 데이터 전송
 });
-
 
 app.get("/board", isAuthenticated, (req, res) => {
     res.render("board.ejs", {user: req.session.user});
