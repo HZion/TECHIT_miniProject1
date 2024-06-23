@@ -27,10 +27,10 @@
             top: 10px;
             left: 10px;
             bottom: 30px;
-            width: 300px; /* 너비를 더 넓게 조정 */
+            width: 300px;
             padding: 5px;
             overflow-y: auto;
-            background: rgba(255, 255, 255, 0.9); /* 배경 불투명도를 높임 */
+            background: rgba(255, 255, 255, 0.9);
             z-index: 1;
             font-size: 12px;
             border-radius: 10px;
@@ -55,8 +55,8 @@
             margin-left: 5px;
         }
         #placesList {
-            max-height: 400px; /* 목록의 최대 높이를 설정 */
-            overflow-y: auto; /* 목록에 스크롤바를 추가 */
+            max-height: 400px;
+            overflow-y: auto;
         }
         #placesList li {
             list-style: none;
@@ -170,63 +170,63 @@
 
     <header class="header_section">
         <div class="container-fluid">
-          <nav class="navbar navbar-expand-lg custom_nav-container ">
-            <a class="navbar-brand" href="index.html">
-              <span>
-                Cryptop
-              </span>
-            </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-              aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-  
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-              <div class="d-flex ml-auto flex-column flex-lg-row align-items-center">
-                <ul class="navbar-nav  ">
-                  <li class="nav-item active">
-                    <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
-                  </li>
-                  <li class="nav-item ">
-                    <a class="nav-link" href="about.html">  about </a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="/send"> send </a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="/trading">
-                      <span>Trading</span> <img src="images/wallet.png" alt="" />
-                    </a>
-                  </li>
-                 
-                  <li class="nav-item">
-                    <a class="nav-link" href="/logout"> Logout</a>
-                  </li>
-             
-                    <li class="nav-item">
-                      <a class="nav-link" href="/login"> Login</a>
-                    </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="/signup"> Sign Up</a>
-                  </li>
-                  
-                </ul>
-                <div class="user_option">
-                  <form class="form-inline my-2 my-lg-0 ml-0 ml-lg-4 mb-3 mb-lg-0">
-                    <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit"></button>
-                  </form>
+            <nav class="navbar navbar-expand-lg custom_nav-container ">
+                <a class="navbar-brand" href="index.html">
+                    <span>
+                        Cryptop
+                    </span>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <div class="d-flex ml-auto flex-column flex-lg-row align-items-center">
+                        <ul class="navbar-nav  ">
+                            <li class="nav-item active">
+                                <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="about.html">  about </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/send"> send </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/trading">
+                                    <span>Trading</span> <img src="images/wallet.png" alt="" />
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="/logout"> Logout</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="/login"> Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/signup"> Sign Up</a>
+                            </li>
+
+                        </ul>
+                        <div class="user_option">
+                            <form class="form-inline my-2 my-lg-0 ml-0 ml-lg-4 mb-3 mb-lg-0">
+                                <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit"></button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
-          </nav>
+            </nav>
         </div>
-      </header>
+    </header>
 <div class="map_wrap">
     <div id="map"></div>
 
     <div id="menu_wrap" class="bg_white">
         <div class="option">
-          <h4>부동산 목록</h4>
+            <h4>부동산 목록</h4>
         </div>
         <hr>
         <ul id="placesList"></ul>
@@ -234,23 +234,28 @@
     </div>
 </div>
 <div id="propData" class="hidden"><%= JSON.stringify(propData) %></div>
-<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=3097ec715d6e2fb312433de5f484d018&libraries=services"></script>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=3097ec715d6e2fb312433de5f484d018&libraries=services,clusterer"></script>
 <script>
 var markers = [];
-
 var mapContainer = document.getElementById('map'),
     mapOption = {
         center: new kakao.maps.LatLng(37.566826, 126.9786567),
-        level: 3
+        level: 13
     };
 
 var map = new kakao.maps.Map(mapContainer, mapOption); 
 var infowindow = new kakao.maps.InfoWindow({zIndex:1});
 
+// 마커 클러스터러를 생성
+var clusterer = new kakao.maps.MarkerClusterer({
+    map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체 
+    averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정 
+    minLevel: 10 // 클러스터 할 최소 지도 레벨 
+});
+
 var propDataElement = document.getElementById('propData');
 var properties = JSON.parse(propDataElement.innerText);
 console.log(properties);
-
 
 function displayProperties() {
     var listEl = document.getElementById('placesList'), 
@@ -264,7 +269,7 @@ function displayProperties() {
     
     for ( var i=0; i<properties.length; i++ ) {
         var propertyPosition = new kakao.maps.LatLng(properties[i].lat, properties[i].lng),
-            marker = addMarker(propertyPosition, i, properties[i].propTitle), 
+            marker = createMarker(propertyPosition, i, properties[i].propTitle), 
             itemEl = getListItem(i, properties[i]); 
 
         bounds.extend(propertyPosition);
@@ -289,11 +294,17 @@ function displayProperties() {
             itemEl.onmouseout =  function () {
                 infowindow.close();
             };
+
+            itemEl.onclick = function() {
+                map.panTo(propertyPosition);
+            };
         })(marker, properties[i]);
 
+        markers.push(marker);
         fragment.appendChild(itemEl);
     }
 
+    clusterer.addMarkers(markers); // 클러스터러에 마커들을 추가
     listEl.appendChild(fragment);
     menuEl.scrollTop = 0;
 
@@ -306,7 +317,7 @@ function getListItem(index, property) {
                 '<div class="info">' +
                 '   <h5>' + property.propTitle + '</h5>' +
                 '   <span> 주소 : ' + property.propAddress + '</span>' +
-                '  <span class="tel"> 매매가 : ' + property.propPrice  + '</span>' +
+                '  <span class="tel"> 매매가 : ' + property.propPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")  + '원</span>' +
                 '</div>';           
 
     el.innerHTML = itemStr;
@@ -315,7 +326,7 @@ function getListItem(index, property) {
     return el;
 }
 
-function addMarker(position, idx, title) {
+function createMarker(position, idx, title) {
     var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png',
         imageSize = new kakao.maps.Size(36, 37),
         imgOptions =  {
@@ -329,9 +340,6 @@ function addMarker(position, idx, title) {
             image: markerImage,
             clickable: true
         });
-
-    marker.setMap(map);
-    markers.push(marker);
 
     return marker;
 }
