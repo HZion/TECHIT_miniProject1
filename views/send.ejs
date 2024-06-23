@@ -37,7 +37,7 @@
     <header class="header_section">
       <div class="container-fluid">
         <nav class="navbar navbar-expand-lg custom_nav-container ">
-          <a class="navbar-brand" href="index.html">
+          <a class="navbar-brand" href="/">
             <span>
               Cryptop
             </span>
@@ -89,10 +89,15 @@
   <section class="how_section layout_padding">
       <form action="/sendLogic" method="post">
         
-      <label>자산</label>
-      <input type="number" name ="money"> 
       <input type="hidden" name="inputID" value="<%= user.inputID %>">
       <input type="hidden" name="inputPWD" value="<%= user.inputPWD %>">
+      
+      <label> <%= user.inputID %> 님 자산: <%= user.asset%>원 </label> 
+      <br><br>
+      
+      <label> 입금자 명 :  </label><input type="text" name="reciver"> <br></bmr>
+      <label> 입금 액 :  </label><input type="number" name ="money"> <br>
+      
       <button type="submit" name="action" value="transfer">이체</button>
       <button type="submit" name="action" value="deposit">입금</button>
 

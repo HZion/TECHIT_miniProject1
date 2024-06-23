@@ -165,94 +165,109 @@ app.post("/enterProp", isAuthenticated,(req, res) =>{
         `)});
 });
 
-app.get("/send", isAuthenticated, (req,res)=>{ 
+app.get("/send", isAuthenticated,   (req,res)=>{ 
     console.log("--send 창--")
     console.log(req.session.user);
     res.render("send.ejs",{user: req.session.user});
+
+   
+   
 })
 
-app.post("/sendLogic", (req, res) => {
-    //1. html에서 세션값을 전송해보자 -> fail ->성공 send 내 session 값을 display none으로 전송
-   // 2. 
+app.post("/sendLogic", function (req, res) {
+    //바뀌나?
     const action = req.body.action; // 폼에서 전송된 action 값 확인
 
-    mydb
-            .collection("user")
-            .findOne({ UID : req.session.user.inputID})
-            .then((result) => {
+    mydb.collection("user").findOne({ UID: req.session.user.inputID })
+        .then((result) => {
+            if (!result) {
+                console.log("User not found");
+                return res.status(404).send("User not found");
+            }
 
-                console.log("전송 db확인 ");
-                
-                console.log(result);
-                console.log("db값 확인");
-                
-                let money = req.body.money;
-                let asset = result.ASSET;
-                
+            console.log("전송 db확인 ");
+            console.log(result);
+            console.log("db값 확인");
 
-                if (action === 'transfer') {
-                    // 이체 처리 로직
-                    //이체 하는 돈보다 자산이 적으면 에러 처리 
-                    // 돈을 감소시키는 처리
-                    // 예시: currentBalance -= money;
-                    if(asset <money){
-                        console.log("보유하신 금액 초과입니다.");
-                    }
-                    else{
-                        asset -= money;
-                        mydb
-                        .collection("user")
-                        .updateOne(
-                            { UID : req.session.user.inputID },
-                            {
-                                $set:
+            let money = parseInt(req.body.money, 10);
+            let asset = parseInt(result.ASSET, 10);
+
+            if (isNaN(money) || isNaN(asset)) {
+                console.log("Invalid input: Not a number");
+                return res.status(400).send("Invalid input");
+            }
+
+            console.log("입력된 돈:" + money);
+            console.log("입력된 자산:" + asset);
+
+            if (action === 'transfer') {
+                console.log('이체 시작');
+                if (asset < money) {
+                    console.log("보유하신 금액 초과입니다.");
+                    return res.status(400).send("보유하신 금액 초과입니다.");
+                } else {
+                    console.log("입금 시작");
+                    mydb.collection("user").findOne({ UID: req.body.reciver })
+                        .then(async (receiver) => {
+                            if (!receiver) {
+                                console.log("Receiver not found");
+                                return res.status(404).send("Receiver not found");
+                            }
+
+                            let senderNewAsset = asset - money;
+                            let receiverNewAsset = parseInt(receiver.ASSET, 10) + money;
+
+                            const bulkOps = [
                                 {
-                                    ASSET : asset
+                                    updateOne: {
+                                        filter: { UID: req.session.user.inputID },
+                                        update: { $set: { ASSET: senderNewAsset } }
+                                    }
+                                },
+                                {
+                                    updateOne: {
+                                        filter: { UID: req.body.reciver },
+                                        update: { $set: { ASSET: receiverNewAsset } }
+                                    }
                                 }
-                            })
-                        .then((result) => {
-                            console.log("출금완료");
-                            res.redirect('/'); 
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                        });
+                            ];
 
-                    }
-                   
-                } else if (action === 'deposit') {
-                 
-                    asset += money;
-                    mydb
-                    .collection("user")
-                    .updateOne(
-                        { UID : req.session.user.inputID },
-                        {
-                            $set:
-                            {
-                                ASSET : asset
+                            try {
+                                const sendDB = await mydb.collection('user').bulkWrite(bulkOps);
+                                console.log("입금완료");
+                                res.redirect('/');
+                            } catch (err) {
+                                console.log("Bulk write error:", err);
+                                res.status(500).send("Internal Server Error");
                             }
                         })
-                    .then((result) => {
-                        console.log("입금완료");
-                        res.redirect('/'); // 
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                    });
-                 
-                } else {
-                    // 예외 처리: 유효하지 않은 action 값
-                    res.status(400).send('잘못된 요청입니다.');
+                        .catch((err) => {
+                            console.log("Receiver find error:", err);
+                            res.status(500).send("Internal Server Error");
+                        });
                 }
-
-            })
-            .catch((result =>{
-
-            }));
-
-
-
-
+            } else if (action === 'deposit') {
+                asset += money;
+                mydb.collection("user").updateOne(
+                    { UID: req.session.user.inputID },
+                    { $set: { ASSET: asset } }
+                )
+                .then((result) => {
+                    console.log("입금완료");
+                    res.redirect('/'); 
+                })
+                .catch((err) => {
+                    console.log("Update error:", err);
+                    res.status(500).send("Internal Server Error");
+                });
+            } else {
+                console.log("잘못된 요청입니다.");
+                res.status(400).send("잘못된 요청입니다.");
+            }
+        })
+        .catch((err) => {
+            console.log("DB error:", err);
+            res.status(500).send("Internal Server Error");
+        });
 });
 
