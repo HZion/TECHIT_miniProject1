@@ -4,6 +4,24 @@
     <meta charset="utf-8">
     <title>부동산 게시물 지도 및 목록 표시</title>
     <style>
+        .sendBtn{
+            display: flex;            /* 플렉스 컨테이너로 설정 */
+            justify-content: flex-end; /* 버튼을 오른쪽으로 정렬 */
+          
+            text-align: center;
+            font-size: 20px;          /* 버튼 텍스트 크기 */
+             padding: 7px 15px;       /* 버튼 내부 여백 */
+            background-color: #007bff; /* 버튼 배경색 */
+            color: #fff;              /* 버튼 텍스트 색상 */
+            border: none;             /* 버튼 테두리 제거 */
+            border-radius: 5px;       /* 버튼 모서리를 둥글게 */
+            cursor: pointer;          /* 마우스 커서 변경 */
+            transition: background-color 0.3s ease; /* 배경색 전환 효과 */
+        }
+        .sendBtn:hover {
+    background-color: #0056b3; /* 호버 시 배경색 변경 */
+}
+
         body, html {
             width: 100%;
             height: 100%;
@@ -101,52 +119,7 @@
             width: 36px;
             height: 37px;
             margin: 10px 0 0 10px;
-            background: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png) no-repeat;
-        }
-        #placesList .item .marker_1 {
-            background-position: 0 -10px;
-        }
-        #placesList .item .marker_2 {
-            background-position: 0 -56px;
-        }
-        #placesList .item .marker_3 {
-            background-position: 0 -102px;
-        }
-        #placesList .item .marker_4 {
-            background-position: 0 -148px;
-        }
-        #placesList .item .marker_5 {
-            background-position: 0 -194px;
-        }
-        #placesList .item .marker_6 {
-            background-position: 0 -240px;
-        }
-        #placesList .item .marker_7 {
-            background-position: 0 -286px;
-        }
-        #placesList .item .marker_8 {
-            background-position: 0 -332px;
-        }
-        #placesList .item .marker_9 {
-            background-position: 0 -378px;
-        }
-        #placesList .item .marker_10 {
-            background-position: 0 -423px;
-        }
-        #placesList .item .marker_11 {
-            background-position: 0 -470px;
-        }
-        #placesList .item .marker_12 {
-            background-position: 0 -516px;
-        }
-        #placesList .item .marker_13 {
-            background-position: 0 -562px;
-        }
-        #placesList .item .marker_14 {
-            background-position: 0 -608px;
-        }
-        #placesList .item .marker_15 {
-            background-position: 0 -654px;
+            background: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png) no-repeat;
         }
         #pagination {
             margin: 10px auto;
@@ -162,6 +135,7 @@
             color: #777;
         }
     </style>
+    <link href="css/style.css" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
@@ -170,9 +144,9 @@
     <header class="header_section">
         <div class="container-fluid">
             <nav class="navbar navbar-expand-lg custom_nav-container ">
-                <a class="navbar-brand" href="index.html">
+                <a class="navbar-brand" href="/">
                     <span>
-                        Cryptop
+                        농협은행
                     </span>
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -184,54 +158,63 @@
                     <div class="d-flex ml-auto flex-column flex-lg-row align-items-center">
                         <ul class="navbar-nav  ">
                             <li class="nav-item active">
-                                <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                                <a class="nav-link" href="/">홈 <span class="sr-only"></span></a>
                             </li>
                             <li class="nav-item ">
-                                <a class="nav-link" href="about.html">  about </a>
+                                <a class="nav-link" href="/board"> 매물등록 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/send"> send </a>
+                                <a class="nav-link" href="/send"> 자산관리 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="/trading">
-                                    <span>Trading</span> <img src="images/wallet.png" alt="" />
+                                    <span>부동산찾기</span> 
                                 </a>
                             </li>
 
-                            <li class="nav-item">
-                                <a class="nav-link" href="/logout"> Logout</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link" href="/login"> Login</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/signup"> Sign Up</a>
-                            </li>
+                            <% if(user) {%>
+                           
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/logout"> 로그아웃</a>
+                                  </li>
+ 
+                                <%} else{%>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/login"> 로그인</a>
+                                      </li>
+                                      <li class="nav-item">
+                                          <a class="nav-link" href="/signup"> 회원가입</a>
+                                      </li>
+ 
+                                <% } %>
 
                         </ul>
-                        <div class="user_option">
-                            <form class="form-inline my-2 my-lg-0 ml-0 ml-lg-4 mb-3 mb-lg-0">
-                                <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit"></button>
-                            </form>
-                        </div>
+                        
                     </div>
                 </div>
             </nav>
         </div>
     </header>
-    
+
 <div class="map_wrap">
     <div id="map"></div>
-
+   
     <div id="menu_wrap" class="bg_white">
         <div class="option">
             <h4>부동산 목록</h4>
+          
         </div>
+       
         <hr>
         <ul id="placesList"></ul>
         <div id="pagination"></div>
+        
+
+        
+            
+            
     </div>
+    
 </div>
 <div id="propData" class="hidden"><%= JSON.stringify(propData) %></div>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=3097ec715d6e2fb312433de5f484d018&libraries=services,clusterer"></script>
@@ -246,7 +229,12 @@ var mapContainer = document.getElementById('map'),
     };
 
 var map = new kakao.maps.Map(mapContainer, mapOption); 
+var mapTypeControl = new kakao.maps.MapTypeControl(); // 일반 지도와 스카이뷰 지도 타입 전환 할 수 있는 지도타입 컨트롤 생성
+var zoomControl = new kakao.maps.ZoomControl();       // 지도 확대 축소 제어할 수 있는 줌 컨트롤 생성
 var infowindow = new kakao.maps.InfoWindow({zIndex:1});
+
+map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT); // 오른쪽 위로 컨트롤 위치 지정
+map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
 
 // 마커 클러스터러를 생성
 var clusterer = new kakao.maps.MarkerClusterer({
@@ -260,20 +248,21 @@ var properties = JSON.parse(propDataElement.innerText);
 console.log(properties);
 
 // 페이지당 표시할 부동산 수
+// 페이지당 표시할 부동산 수
 var pageSize = 7;
 var currentPage = 1;
 
 function displayProperties() {
     var listEl = document.getElementById('placesList'), 
-    menuEl = document.getElementById('menu_wrap'),
-    fragment = document.createDocumentFragment(), 
-    bounds = new kakao.maps.LatLngBounds(), 
-    listStr = '';
+        menuEl = document.getElementById('menu_wrap'),
+        fragment = document.createDocumentFragment(), 
+        bounds = new kakao.maps.LatLngBounds(), 
+        listStr = '';
     
-    removeAllChildNods(listEl);
-    removeMarker();
+    removeAllChildNods(listEl);                                         // 검색 결과 목록에 추가된 항목들을제거
+    removeMarker();                                                     // 지도에 표시되고 있는 마커 제거
     
-    var start = (currentPage - 1) * pageSize;
+    var start = (currentPage - 1) * pageSize;                           // 
     var end = start + pageSize;
     var pagedProperties = properties.slice(start, end);
     
@@ -284,9 +273,9 @@ function displayProperties() {
 
         bounds.extend(propertyPosition);
 
-        (function(marker, property) {
+        (function(marker, propertyPosition, property) {
             var infowindow = new kakao.maps.InfoWindow({
-                content: '<div style="padding:5px;z-index:1;">' + property.propTitle + '<br>' + property.propAddress + '<br>' + property.propPrice + '</div>'
+                content: '<div style="padding:5px;z-index:1;">' + property.propTitle + '<br> 주소 : ' + property.propAddress + '<br> 매매가 : ' + property.propPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '</div>'
             });
 
             kakao.maps.event.addListener(marker, 'mouseover', function() {
@@ -297,18 +286,18 @@ function displayProperties() {
                 infowindow.close();
             });
 
-            itemEl.onmouseover =  function () {
+            itemEl.onmouseover = function() {
                 displayInfowindow(marker, property.propTitle);
             };
 
-            itemEl.onmouseout =  function () {
+            itemEl.onmouseout = function() {
                 infowindow.close();
             };
 
             itemEl.onclick = function() {
-                map.panTo(propertyPosition);
+                map.panTo(propertyPosition);                    // 클릭시 해당 아이템 좌표이동
             };
-        })(marker, pagedProperties[i]);
+        })(marker, propertyPosition, pagedProperties[i]);
 
         markers.push(marker);
         fragment.appendChild(itemEl);
@@ -365,14 +354,9 @@ function getListItem(index, property) {
 }
 
 function createMarker(position, idx, title) {
-    var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png',       // 마커 이미지 url
-        imageSize = new kakao.maps.Size(36, 37),                                                            // 마커 이미지 크기
-        imgOptions =  {
-            spriteSize : new kakao.maps.Size(36, 691),                                                      // 스프라이트 이미지 크기
-            spriteOrigin : new kakao.maps.Point(0, ((currentPage - 1) * pageSize + idx) * 46 + 10),         // 스프라이트 이미지 중 사용할 영역의 좌상단 좌표
-            offset: new kakao.maps.Point(13, 37)                                                            // 마커 좌표에 일치시킬 이미지 내에서의 좌표
-        },
-        markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
+    var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png',       // 마커 이미지 url
+        imageSize = new kakao.maps.Size(31, 35),                                                            // 마커 이미지 크기
+        markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, new kakao.maps.Point(13, 34)),
         marker = new kakao.maps.Marker({
             position: position,
             image: markerImage,
@@ -405,6 +389,7 @@ function removeAllChildNods(el) {
 window.onload = function() {
     displayProperties();
 };
+
 
 </script>
 </body>

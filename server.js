@@ -6,6 +6,7 @@ const app = express();
 const bodyParser = require("body-parser");
 
 app.set('view engine', 'ejs');
+
 let session = require("express-session");
 
 const { render } = require("ejs");
@@ -17,6 +18,8 @@ app.use(session(
         saveUninitialized : true,
     }
 ));
+
+
 
 app.use(bodyParser.urlencoded({extended:true}));
 
@@ -52,53 +55,38 @@ app.get("/login", (req, res) =>{
         console.log("세션 유지");
     
     }else{
-        res.render("login.ejs" );
+        res.render("login.ejs", {user: req.session.user} );
     }
 });
 
 app.post("/loginLogic", (req,res)=>{
 
-    console.log(req.body);
-    
+    // load data from user 
     let uid = req.body.inputID;
-    let passward = req.body.inputPWD;
-    
-    // console.log(passward);
-    // let objectIdUid = new ObjId(uid);
-    
-    // req.body.inputID = new ObjId(req.body.inputID);
-    // req.body.inputPWD = new ObjId(req.body.inputPWD);
+    let passward = req.body.inputPWD;   
 
     mydb
             .collection("user")
             .findOne({ UID : req.body.inputID })
             .then((result) => {
-                if(result){
-                    // console.log("DB에서 사용자 찾음");
+                if(result){                
                     if(result.PWD == passward){
-                        // console.log('로그인에 성공하셨습니다.') // 조회된 사용자 정보 출력
-                        
-                        req.session.user = req.body;
-                        // console.log(req.session.user);
-                        res.redirect("/");
+                        // sucess login                
+                        req.session.user = {inputID: result.UID, inputPWD: result.PWD, asset: result.ASSET};               
+                        res.redirect("/", );
                     }else{
-                    //    alert("비밀번호가 틀렸습니다.");
-                        res.render("/login");
+                     // fail loig
+                        res.render("/login",{user: req.session.user});
                     }
                 }
                     else{
-                    // console.log("사용자를 찾을 수 없음");
+                    // fail search db
                     res.redirect("/login");
-                }
-              
+                }              
                 res.redirect("/");
             })
             .catch((result =>{
-
-            }));
-                
-            
-        
+            }));                
 })
 
 app.get("/logout", (req,res)=>{
@@ -107,7 +95,7 @@ app.get("/logout", (req,res)=>{
     res.redirect('/');
 })
 app.get("/signup", (req, res) =>{
-    res.render("signup.ejs");
+    res.render("signup.ejs",{user: req.session.user});
 });
 
 app.post("/register", (req,res) =>{
@@ -136,7 +124,7 @@ app.get("/trading", (req, res)=>{
             console.log(req.session.user.inputID);
         };
         console.log(result);
-        res.render("trading.ejs", {propData : result});
+        res.render("trading.ejs", { user: req.session.user, propData : result});
     }); // 몽고 db에 등록한 부동산 매물 리스트 데이터 전송
 });
 
@@ -228,7 +216,7 @@ app.post("/sendLogic", function (req, res) {
                                     updateOne: {
                                         filter: { UID: req.body.reciver },
                                         update: { $set: { ASSET: receiverNewAsset } }
-                                    }
+                                    }                                    
                                 }
                             ];
 
